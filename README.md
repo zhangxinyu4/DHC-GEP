@@ -26,6 +26,14 @@ __Fig. c shows the strategy of dimensional verification__: first assign prime nu
 
 [Anoconda](https://www.anaconda.com/) is recommended for installing the above dependencies.
 
+## Performance Optimizations
+Recent improvements to the dimensional verification module include:
+* **Dimension result caching**: Frequently computed dimensional expressions are cached to avoid redundant calculations, significantly improving performance for large populations.
+* **Improved code structure**: The centralized `DHC_GEP.py` module eliminates code duplication across different study directories.
+* **Backward compatibility**: All existing examples continue to work without modification.
+
+The optimized dimensional verification function maintains the original behavior while providing better performance for iterative GEP evolution where the same sub-expressions may be evaluated many times.
+
 ## How to run  our cases
 All the training data are in the 'data' dictionary. 
 
@@ -35,19 +43,49 @@ Every 20 generations, the current optimal individual is checked, and if a new op
 
 ## How to run  your cases
 If someone wants to employ DHC-GEP in other problems, one should reassign number tags for the imported terminals. This is implemented in the following codes. One can redefine 'dict_of_dimension' as needed. Key is the name of imported terminal. Value is the corresponding number tag.
-```
+
+### Full Support for All 7 SI Base Dimensions
+DHC-GEP fully supports all 7 SI base dimensions using unique prime number encoding:
+- **L (Length)** = 2 - meter [m]
+- **M (Mass)** = 3 - kilogram [kg]
+- **T (Time)** = 5 - second [s]
+- **I (Electric Current)** = 7 - ampere [A]
+- **Theta (Temperature)** = 11 - kelvin [K]
+- **N (Amount of Substance)** = 13 - mole [mol]
+- **J (Luminous Intensity)** = 17 - candela [cd]
+
+This prime number encoding ensures that dimensional combinations are uniquely identifiable through their product, enabling robust dimensional analysis for complex physical systems including electromagnetics, thermodynamics, chemistry, and photometry.
+
+### Basic Example (Mechanical Systems)
+```python
 # Assign prime number tags to base dimensions
 L,M,T,I,Theta,N,J = 2,3,5,7,11,13,17
 
-# Derive the tags for dirived physical quantities according to their dimensions
+# Derive the tags for derived physical quantities according to their dimensions
 # Note that the tags are always in the form of fractions, instead of floats, which avoids introducing any truncation errors. 
 # Therefore, we use 'Fraction' function here.
-dict_of_dimension = {'rho':Fraction(M,((L)**(3))),
-                     'rho_y':Fraction(M,((L)**(4))),
-                     'rho_yy':Fraction(M,((L)**(5))),
-                     'rho_3y':Fraction(M,((L)**(6))),
-                     'df_c':Fraction((L**2),T)} 
+dict_of_dimension = {'rho':Fraction(M,((L)**(3))),      # Density [kg/m³]
+                     'rho_y':Fraction(M,((L)**(4))),    # Density gradient
+                     'rho_yy':Fraction(M,((L)**(5))),   # Second derivative
+                     'rho_3y':Fraction(M,((L)**(6))),   # Third derivative
+                     'df_c':Fraction((L**2),T)}         # Diffusion coefficient [m²/s]
 
-# Assign number tags to taget variable
-target_dimension = Fraction(M,T*((L)**(3)))
+# Assign number tags to target variable
+target_dimension = Fraction(M,T*((L)**(3)))             # Density flux [kg/(m³·s)]
 ```
+
+### Advanced Example (Thermoelectric Systems)
+For systems involving multiple dimensions, simply include them in the dictionary:
+```python
+# Example with electrical and thermal quantities
+dict_of_dimension = {
+    'temperature': Fraction(Theta),                      # Temperature [K]
+    'temp_gradient': Fraction(Theta, L),                 # Temperature gradient [K/m]
+    'current': Fraction(I),                              # Electric current [A]
+    'thermal_cond': Fraction(M * L, T**3 * Theta),      # Thermal conductivity [W/(m·K)]
+    'voltage': Fraction(M * L**2, T**3 * I),            # Voltage [V]
+    'mol_conc': Fraction(N, L**3)                        # Molar concentration [mol/m³]
+}
+```
+
+See `examples/seven_dimensions_example.py` for a complete working example demonstrating all 7 dimensions.

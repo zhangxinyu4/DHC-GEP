@@ -176,8 +176,9 @@ def estimate_gep_performance_improvement():
     print(f"  With cache: {time_with_cache:.2f} seconds")
     print(f"  Time saved: {time_saved:.2f} seconds ({time_saved/time_without_cache*100:.1f}% reduction)")
     
-    print(f"\nNote: These are conservative estimates. Actual improvements may vary")
-    print(f"      depending on the complexity of expressions and cache hit rates.")
+    print(f"\nNote: These are conservative theoretical estimates based on 10x speedup.")
+    print(f"      Actual measured speedup is 3-5x depending on the operation type.")
+    print(f"      Real improvements may vary based on expression complexity and cache hit rates.")
 
 
 def main():

@@ -111,7 +111,7 @@ class DimensionalVerifier:
         dim_a = self._get_dimension(a)
         dim_b = self._get_dimension(b)
         
-        if dim_a is None or dim_b is None or dim_b == 0:
+        if dim_a is None or dim_b is None or dim_b == Fraction(0):
             return None
         
         # Use cached division
@@ -345,7 +345,7 @@ def gep_simple(population, toolbox, n_generations=100, n_elites=1,
             if str(simplified_best) not in simplified_best_list:
                 simplified_best_list.append(str(simplified_best))
                 elapsed = time.time() - start_time
-                time_str = '%.2f' % (elapsed)   
+                time_str = f'{elapsed:.2f}'   
                 if hasattr(elites_IR, 'a') and elites_IR.a != 1e18:
                     simplified_best = elites_IR.a * simplified_best      
                     key = f'In generation {gen}, with CPU running {time_str}s, \nOur No.1 best prediction is:'

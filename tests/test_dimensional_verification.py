@@ -194,9 +194,12 @@ class TestPerformanceOptimizations(unittest.TestCase):
             _cached_fraction_mul(2, 3, 5, 7)
         second_time = time.time() - start
         
-        # Cache should make it faster (or at least not significantly slower)
-        # We use a lenient check because caching overhead might be minimal for simple operations
-        self.assertLessEqual(second_time, first_time * 1.5)
+        # Cache should make it faster. We use a lenient check since timing can vary,
+        # but the primary validation is the cache hit count
+        info = _cached_fraction_mul.cache_info()
+        # After 2000 calls with same args, we should have many hits
+        self.assertGreater(info.hits, 1000, "Cache should register hits")
+        self.assertLess(info.misses, 10, "Cache misses should be minimal")
     
     def test_cache_info(self):
         """Test cache statistics."""

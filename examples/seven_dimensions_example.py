@@ -188,8 +188,9 @@ toolbox.register('select', tools.selTournament, tournsize=3)
 toolbox.register('mut_uniform', gep.mutate_uniform, pset=pset, ind_pb=0.05, pb=1)
 toolbox.register('cx_1p', gep.crossover_one_point, pb=0.1)
 
-# 2. Dc-specific operators
-toolbox.pbs = {'mut_uniform': 0.2, 'cx_1p': 0.5}
+# 2. Set operator probabilities using dictionary access
+toolbox.pbs['mut_uniform'] = 0.2
+toolbox.pbs['cx_1p'] = 0.5
 
 # %% Statistics and Hall of Fame
 stats = tools.Statistics(key=lambda ind: ind.fitness.values[0])

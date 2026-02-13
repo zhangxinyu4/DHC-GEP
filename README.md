@@ -26,20 +26,84 @@ __Fig. c shows the strategy of dimensional verification__: first assign prime nu
 
 [Anoconda](https://www.anaconda.com/) is recommended for installing the above dependencies.
 
-## How to run  our cases
-All the training data are in the 'data' dictionary. 
+## 🆕 New Modular Package (Recommended)
 
-The scripts are in the corresponding dictionaries. One can run the desired scripts with python.
+We have refactored the code to eliminate duplication and hardcoded values. **The new `dhc_gep` package is recommended for new projects.**
 
-Every 20 generations, the current optimal individual is checked, and if a new optimal individual appears, it will be output to a '.dat' file in the 'Output' dictionary. The latest population is saved every 20 generations to a '.pkl' file in the 'pkl' dictionary for ease of subsequent restarting if necessary. 
+### Key Improvements:
+- ✅ **No code duplication** - Single source of truth
+- ✅ **Configurable parameters** - Centralized configuration  
+- ✅ **Modular design** - Clean separation of concerns
+- ✅ **Easy to use** - Simple API with sensible defaults
+- ✅ **Better efficiency** - Optimized and maintainable code
 
-## How to run  your cases
-If someone wants to employ DHC-GEP in other problems, one should reassign number tags for the imported terminals. This is implemented in the following codes. One can redefine 'dict_of_dimension' as needed. Key is the name of imported terminal. Value is the corresponding number tag.
+### Quick Start with New Package:
+
+```python
+import dhc_gep
+from dhc_gep import L, M, T
+from fractions import Fraction
+
+# 1. Load data with utility function
+data = dhc_gep.load_mat_data(
+    'data/Diffusion_flow.mat',
+    ['rho', 'rho_y', 'rho_yy', 'rho_3y', 'rho_t'],
+    subsample=720
+)
+
+# 2. Get configuration (centralized, no hardcoding!)
+config = dhc_gep.get_config(
+    n_population=1660,
+    n_generations=200,
+    tolerance=1e-3
+)
+
+# 3. Setup in one line
+pset = dhc_gep.setup_primitive_set(
+    input_names=['rho', 'rho_y', 'rho_yy', 'rho_3y'],
+    constants={'df_c': 1.399e-05}
+)
+toolbox = dhc_gep.create_toolbox(pset, config)
+dhc_gep.register_genetic_operators(toolbox, config)
+
+# 4. Define dimensions (same as before, but cleaner)
+dims = dhc_gep.get_dimension_dict('diffusion')  # Or define custom
+
+# 5. Run evolution
+pop, log = dhc_gep.gep_simple(pop, toolbox, **config)
 ```
+
+See `dhc_gep/README.md` for complete documentation and `examples/diffusion_equation_simplified.py` for a working example.
+
+### Package Structure:
+```
+dhc_gep/
+├── config.py         # Centralized configuration (no more hardcoded values!)
+├── core.py           # Single consolidated DHC_GEP implementation  
+├── utils.py          # Experiment setup utilities
+├── data_utils.py     # Data loading and preprocessing
+└── README.md         # Detailed documentation
+```
+
+## How to run original cases
+All the training data are in the 'data' directory. 
+
+The original scripts are in their corresponding directories. You can still run them with python for backward compatibility.
+
+Every 20 generations, the current optimal individual is checked, and if a new optimal individual appears, it will be output to a '.dat' file in the 'output' directory. The latest population is saved every 20 generations to a '.pkl' file in the 'pkl' directory for ease of subsequent restarting if necessary.
+
+## How to run your own cases
+
+### Using the New Package (Recommended):
+See `dhc_gep/README.md` for detailed instructions and examples.
+
+### Using Original Approach:
+If someone wants to employ DHC-GEP in other problems, one should reassign number tags for the imported terminals. This is implemented in the following codes. One can redefine 'dict_of_dimension' as needed. Key is the name of imported terminal. Value is the corresponding number tag.
+```python
 # Assign prime number tags to base dimensions
 L,M,T,I,Theta,N,J = 2,3,5,7,11,13,17
 
-# Derive the tags for dirived physical quantities according to their dimensions
+# Derive the tags for derived physical quantities according to their dimensions
 # Note that the tags are always in the form of fractions, instead of floats, which avoids introducing any truncation errors. 
 # Therefore, we use 'Fraction' function here.
 dict_of_dimension = {'rho':Fraction(M,((L)**(3))),
@@ -48,6 +112,6 @@ dict_of_dimension = {'rho':Fraction(M,((L)**(3))),
                      'rho_3y':Fraction(M,((L)**(6))),
                      'df_c':Fraction((L**2),T)} 
 
-# Assign number tags to taget variable
+# Assign number tags to target variable
 target_dimension = Fraction(M,T*((L)**(3)))
 ```

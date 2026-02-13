@@ -1,0 +1,26 @@
+# DHC-GEP Requirements
+# Install with: pip install -r requirements.txt
+
+# Core dependencies
+numpy>=1.18.0
+scipy>=1.4.0
+geppy>=0.1.2
+
+# Standard library modules (no installation needed)
+# - random
+# - operator
+# - pickle
+# - fractions
+# - time
+# - os
+# - warnings
+# - datetime
+
+# Optional dependencies
+# For specific examples and applications
+tensorflow>=1.12.0  # Only needed for some advanced examples
+
+# Development dependencies (optional)
+# pytest>=6.0.0  # For running tests
+# black>=21.0  # For code formatting
+# pylint>=2.0  # For code linting

@@ -51,11 +51,8 @@ print("  ✓ PASS")
 
 # Test 3: Complex valid expression
 print("\nTest 3: Complex valid expression")
-complex_expr = MockIndividual("truediv(mul(df_c,rho_yy),rho)")
-# df_c * rho_yy / rho = (L²/T) * (M/L⁵) / (M/L³) = (M·L²)/(T·L⁵) / (M/L³) = L²/(T·L⁵) * L³/1 = L⁵/(T·L⁵) = 1/T
-# Hmm, that's not right. Let me recalculate...
 # df_c * rho_yy = (L²/T) * (M/L⁵) = M/(T·L³)
-# This matches target_dimension!
+# This matches target_dimension = M/(T·L³)
 complex_expr = MockIndividual("mul(df_c,rho_yy)")
 result = dg.dimensional_verification(complex_expr, dict_of_dimension, target_dimension)
 print(f"  Result: {result}")

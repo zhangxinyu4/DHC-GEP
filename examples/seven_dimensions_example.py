@@ -55,13 +55,13 @@ heat_flux = thermal_conductivity * temp_gradient
 # Add some noise
 heat_flux = heat_flux + np.random.normal(0, 0.5, n_samples)
 
-# Reshape for GEP
+# Reshape for GEP and rename for consistency with dict_of_dimension
 temperature = temperature.reshape(-1, 1)
 temp_gradient = temp_gradient.reshape(-1, 1)
 current = current.reshape(-1, 1)
-material_density = material_density.reshape(-1, 1)
+density = material_density.reshape(-1, 1)  # Renamed for consistency with dict_of_dimension
 molar_mass = molar_mass.reshape(-1, 1)
-luminous_flux_per_area = luminous_flux_per_area.reshape(-1, 1)
+luminous = luminous_flux_per_area.reshape(-1, 1)  # Renamed for consistency
 Y = heat_flux.reshape(-1, 1)
 
 # %% Assign number tags for all 7 SI base dimensions
@@ -201,7 +201,7 @@ toolbox.register('cx_gene', gep.crossover_gene, pb=0.1)
 toolbox.register('mut_dc', gep.mutate_uniform_dc, ind_pb=0.05, pb=1)
 toolbox.register('mut_invert_dc', gep.invert_dc, pb=0.1)
 toolbox.register('mut_transpose_dc', gep.transpose_dc, pb=0.1)
-toolbox.register('mut_rnc_array_dc', gep.mutate_rnc_array_dc, rnc_gen=toolbox.rnc_gen, ind_pb='0.5p')
+toolbox.register('mut_rnc_array_dc', gep.mutate_rnc_array_dc, rnc_gen=toolbox.rnc_gen, ind_pb=0.5)
 toolbox.pbs['mut_rnc_array_dc'] = 1
 
 # %% Statistics to be inspected

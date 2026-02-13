@@ -129,7 +129,9 @@ def dimensional_verification(individual, dict_of_dimension, target_dimension):
             dim_a, dim_b = args[0], args[1]
             if isinstance(dim_a, bool) or isinstance(dim_b, bool):
                 return False
-            if dim_b == 0 or dim_b == False:
+            if isinstance(dim_b, Fraction) and dim_b == Fraction(0):
+                return False
+            if dim_b == 0:
                 return False
             if isinstance(dim_a, int):
                 dim_a = Fraction(1)
@@ -180,7 +182,11 @@ def dimensional_verification(individual, dict_of_dimension, target_dimension):
             return a * b
 
         def my_truediv(a,b):
-            if isinstance(a,bool) or isinstance(b,bool) or b == 0:
+            if isinstance(a,bool) or isinstance(b,bool):
+                return False
+            if isinstance(b, Fraction) and b == Fraction(0):
+                return False
+            if b == 0:
                 return False
             if isinstance(a,int):
                 a = Fraction(1)

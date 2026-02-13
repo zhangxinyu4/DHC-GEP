@@ -116,3 +116,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# DHC-GEP output files
+output/
+pkl/
+*.dat
+*.pkl

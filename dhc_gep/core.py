@@ -279,7 +279,7 @@ def gep_simple(population, toolbox, n_generations=100, n_elites=1,
                         try:
                             no_entropy_loss = evaluate_no_loss_entropy(elites_IR)[0]
                             output_str += f', no entropy loss = {no_entropy_loss}'
-                        except:
+                        except Exception:
                             pass
                     
                     output_str += '\n'

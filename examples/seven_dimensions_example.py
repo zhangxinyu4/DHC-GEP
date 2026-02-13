@@ -111,13 +111,9 @@ print(f"{'Target (heat_flux)':20s}: {target_dimension}")
 print("=" * 60)
 
 # %% Creating the primitives set
-def protected_div(x1, x2):
-    """Protected division to avoid dividing by zero"""
-    if abs(x2) < 1e-10:
-        return 1
-    return x1 / x2
 
 # Define the operators
+# Note: Using standard operator.truediv for division (no protected division needed for dimensional analysis)
 pset = gep.PrimitiveSet('Main', input_names=['temperature', 'temp_gradient', 'current', 
                                                'density', 'molar_mass', 'luminous'])
 pset.add_symbol_terminal('k_thermal', thermal_conductivity)
@@ -126,6 +122,8 @@ pset.add_function(operator.sub, 2)
 pset.add_function(operator.mul, 2)
 pset.add_function(operator.truediv, 2)
 pset.add_rnc_terminal()  # Add random numerical constants (RNC)
+# Configure numpy to raise exceptions on floating point errors
+# This helps catch numerical issues during evolution
 np.seterr(divide='raise')
 
 # %% Create the individual and population

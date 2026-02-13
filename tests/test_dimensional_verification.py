@@ -214,10 +214,8 @@ class TestDimensionalVerification(unittest.TestCase):
 class TestCachePerformance(unittest.TestCase):
     """Test dimensional verification caching for performance"""
     
-    def test_cache_improves_performance(self):
-        """Verify that caching improves performance for repeated evaluations"""
-        import time
-        
+    def test_cache_handles_repeated_evaluations(self):
+        """Verify that caching handles repeated evaluations correctly"""
         L, M, T = 2, 3, 5
         dict_of_dimension = {
             'x': Fraction(M, L**3),
@@ -228,22 +226,15 @@ class TestCachePerformance(unittest.TestCase):
         # Create a moderately complex expression
         ind = MockIndividual("mul(x,y)")
         
-        # First run - populates cache
-        start = time.time()
+        # Multiple evaluations should all return the same correct result
+        results = []
         for _ in range(100):
-            dg.dimensional_verification(ind, dict_of_dimension, target_dimension)
-        first_run = time.time() - start
+            result = dg.dimensional_verification(ind, dict_of_dimension, target_dimension)
+            results.append(result)
         
-        # Second run - should use cache
-        start = time.time()
-        for _ in range(100):
-            dg.dimensional_verification(ind, dict_of_dimension, target_dimension)
-        second_run = time.time() - start
-        
-        # Note: With caching, second run might be faster, but this test
-        # just ensures both complete successfully
-        self.assertIsNotNone(first_run)
-        self.assertIsNotNone(second_run)
+        # All results should be consistent
+        self.assertTrue(all(r == results[0] for r in results))
+        self.assertTrue(results[0])  # Should be valid
 
 
 if __name__ == '__main__':
